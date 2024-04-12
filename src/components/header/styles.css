@@ -1,0 +1,17 @@
+.login-form-module .dropdown-open::after {
+    content: none;
+}
+
+.login-form-module .dropdown-open svg{
+    width: 28px;
+    height: 28px;
+}
+
+.login-form-module .login-form-wrapper{
+    min-width: 250px;
+}
+
+.app-header .wrap {
+    display: flex;
+    justify-content: space-between;
+}
