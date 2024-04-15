@@ -3,7 +3,7 @@ import "./globals.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 import { Container } from "react-bootstrap";
-import Header from "@/components/header/header";
+import Header from "./components/header/header";
 const inter = Inter({ subsets: ["latin"] });
 
 
