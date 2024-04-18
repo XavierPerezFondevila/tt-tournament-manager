@@ -17,8 +17,8 @@ export async function getUser(nick, password) {
 }
 
 export async function createTournament(data) {
-    const sqlData = await sql`INSERT into TORNEOS (nombre, fecha_inicio, num_grupos, plazas_torneo, ubicacion, modalidad) 
-    values (${`${data.name}`}, ${`${data.date}`}, ${`${data.groups}`}, ${`${data.participants}`}, ${`${data.location}`}, ${`${data.mode}`})`;
+    const sqlData = await sql`INSERT into TORNEOS (nombre, fecha_inicio, num_grupos, plazas_torneo, num_clasificados, ubicacion, modalidad) 
+    values (${`${data.name}`}, ${`${data.date}`}, ${`${data.groups}`}, ${`${data.participants}`}, ${`${data.winnersByGroup}`}, ${`${data.location}`}, ${`${data.mode}`})`;
 
     return sqlData;
 }
