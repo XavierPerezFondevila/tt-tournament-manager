@@ -1,17 +1,24 @@
 "use client";
 
+import { deleteTournament } from "@/actions/data";
 import Link from "next/link";
 import { Button, Col, Row } from "react-bootstrap";
 import { ToastContainer, Zoom, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css"; // Import the Toastify CSS file
 
-import "react-toastify/dist/ReactToastify.css";
-
 export default function List({ tournament }) {
-  const notify = (message) => toast.success(message);
+  const deleteTournamentAction = async (ev, id) => {
+    const response = await deleteTournament(id);
+    // eliminar el nodo del html :)
+    if (response.success) {
+      toast.success("Eliminado Correctamente");
+    } else {
+      toast.error("Ha habido un error al eliminar el torneo");
+    }
+  };
 
   return (
-    <div className="wrap">
+    <div className="wrap p-2 border mt-4">
       <ToastContainer
         position="top-center"
         autoClose={2000}
@@ -42,18 +49,15 @@ export default function List({ tournament }) {
       </div>
       <Row className="action-buttons mt-3 mx-0 w-100">
         <Col xs={12} md={4} className="px-0 px-md-1 my-1 my-md-0">
-          <Button
-            variant="success"
-            className="edit-btn w-100"
-            onClick={() => {
-              notify("Editado Correctamente");
-            }}
+          <Link
+            className="btn btn-success edit-btn w-100"
+            href={`/update-tournament/${tournament.id}`}
           >
             Editar
-          </Button>
+          </Link>
         </Col>
         <Col xs={12} md={4} className="px-0 px-md-1 my-1 my-md-0">
-          <Link class="btn btn-primary w-100" href="/">
+          <Link className="btn btn-primary w-100" href="/">
             Ver torneo
           </Link>
         </Col>
@@ -61,8 +65,8 @@ export default function List({ tournament }) {
           <Button
             variant="danger"
             className="remove-btn w-100"
-            onClick={() => {
-              notify("Eliminado Correctamente");
+            onClick={(ev) => {
+              deleteTournamentAction(ev, tournament.id);
             }}
           >
             Eliminar

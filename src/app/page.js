@@ -9,15 +9,15 @@ export default function Home() {
   return (
     <main className="page-home">
       <Container>
-        <Row>
+        <Row className="home-buttons-wrapper">
           <Col xs={6}>
-            <Link className="home-link d-flex flex-column flex-md-row text-center h-100" href="/add-tournament">
+            <Link className="w-100 home-link d-flex flex-column flex-md-row text-center h-100" href="/add-tournament">
               <IconAdd />
               <span className="lbl">Añadir torneo</span>
             </Link>
           </Col>
           <Col xs={6}>
-            <Link className="home-link d-flex flex-column flex-md-row text-center h-100" href="/list-tournaments">
+            <Link className="w-100 home-link d-flex flex-column flex-md-row text-center h-100" href="/list-tournaments">
               <IconList className={styles.icon} />
               <span className="lbl">Ver torneos</span>
             </Link>

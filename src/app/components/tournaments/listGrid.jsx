@@ -6,15 +6,9 @@ export default async function ListGrid() {
   const tournaments = await getAllTournaments();
 
   return (
-    <Row>
+    <Row className="mb-4" style={{ marginTop: -1.5 + "rem" }}>
       {tournaments?.map((tournament, index) => (
-        <Col
-          key={index}
-          xs={12}
-          md={6}
-          lg={4}
-          className="tournament-wrapper border p-2"
-        >
+        <Col key={index} xs={12} md={6} lg={4} className="tournament-wrapper">
           <List tournament={tournament} />
         </Col>
       ))}
