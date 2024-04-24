@@ -76,6 +76,54 @@ export async function getAllTournaments() {
     return [];
 }
 
+export async function getTournamentPlayers(id) {
+    noStore();
+    if (!isNaN(id) && parseInt(id) > 0) {
+        const sqlData = await sql`SELECT J.ID, J.NOMBRE, J.EMAIL, J.MOVIL, J.RANKING
+        FROM JUGADOR J
+        JOIN PARTICIPACION P ON J.ID = P.ID_JUGADOR
+        WHERE P.ID_TORNEO = ${`${id}`}
+        ORDER BY J.RANKING DESC`;
+
+        return sqlData.rows;
+    }
+
+
+    return null;
+}
+
+export async function addPlayerToTournament(player, tournamentId) {
+
+    const playerData = await sql`SELECT ID
+    FROM JUGADOR J
+    WHERE J.EMAIL = ${`${player.email}`}`;
+
+    let newPlayerData = null;
+    if (playerData.rows.length) {
+        newPlayerData = await sql`UPDATE JUGADOR SET 
+        nombre = ${`${player.nombre}`},
+        movil = ${`${player.movil}`},
+        ranking = ${`${player.ranking}`}
+        WHERE email = ${`${player.email}`}
+        RETURNING id;`;
+    } else {
+        newPlayerData = await sql`INSERT into JUGADOR (nombre, email, movil, ranking) 
+        values (${`${player.nombre}`}, ${`${player.email}`}, ${`${player.movil}`}, ${`${player.ranking}`})
+        RETURNING id`;
+    }
+
+    if (newPlayerData.rows.length) {
+        const newPlayerId = newPlayerData.rows[0]?.id;
+        const newParticipation = await sql`INSERT into participacion (id_torneo, id_jugador) 
+        values (${`${tournamentId}`}, ${`${newPlayerId}`})`;
+
+        return parseReponse(newParticipation);
+    }
+
+    return { success: false }
+
+}
+
 function parseReponse(response) {
     if (response.rowCount == 1) {
         return { success: true };

@@ -57,7 +57,10 @@ export default function List({ tournament }) {
           </Link>
         </Col>
         <Col xs={12} md={4} className="px-0 px-md-1 my-1 my-md-0">
-          <Link className="btn btn-primary w-100" href="/">
+          <Link
+            className="btn btn-primary w-100"
+            href={`/tournament/${tournament.id}`}
+          >
             Ver torneo
           </Link>
         </Col>
