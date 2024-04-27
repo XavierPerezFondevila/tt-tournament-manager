@@ -42,6 +42,30 @@ CREATE TABLE JUGADOR (
 	RANKING INT NOT NULL
 );
 
+INSERT INTO JUGADOR (nombre, email, movil, ranking) VALUES
+('Juan Pérez', 'juanperez@example.com', '123456789', 100),
+('María García', 'mariagarcia@example.com', '987654321', 200),
+('Pedro Martínez', 'pedromartinez@example.com', '111222333', 300),
+('Ana López', 'analopez@example.com', '444555666', 400),
+('Luis Rodríguez', 'luisrodriguez@example.com', '777888999', 500),
+('Laura Sánchez', 'laurasanchez@example.com', '666555444', 600),
+('Carlos Gómez', 'carlosgomez@example.com', '999888777', 700),
+('Sofía Martín', 'sofiamartin@example.com', '222333444', 800),
+('Miguel Fernández', 'miguelfernandez@example.com', '111444777', 900),
+('Elena Pérez', 'elenaperez@example.com', '555444333', 1000),
+('Daniel Ruiz', 'danielruiz@example.com', '333222111', 1100),
+('Lucía Gutiérrez', 'luciagutierrez@example.com', '999111222', 1200),
+('Pablo Serrano', 'pabloserrano@example.com', '888777666', 1300),
+('Andrea Torres', 'andreatorres@example.com', '777666555', 1400),
+('Javier Jiménez', 'javierjimenez@example.com', '222111000', 1500),
+('Rosa López', 'rosalopez@example.com', '555666777', 110),
+('Diego Pérez', 'diegoperez@example.com', '888999000', 220),
+('Marina Rodríguez', 'marinarodriguez@example.com', '123456789', 330),
+('Alberto Gómez', 'albertogomez@example.com', '987654321', 440),
+('Carmen Sánchez', 'carmensanchez@example.com', '111222333', 550),
+('Jorge Martínez', 'jorgemartinez@example.com', '444555666', 660);
+
+
 CREATE TABLE PARTICIPACION (
     ID SERIAL PRIMARY KEY,
     ID_TORNEO INT REFERENCES TORNEOS(ID),

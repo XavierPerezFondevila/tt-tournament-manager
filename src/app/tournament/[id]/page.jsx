@@ -8,8 +8,6 @@ export default async function page({ params }) {
       <h1 className="title text-center mb-4">Datos del torneo</h1>
       <Suspense fallback={`Cargando...`}>
         <TournamentView tournamentId={params.id} />
-      </Suspense>
-      <Suspense fallback={`Cargando...`}>
         <TournamentViewBottom tournamentId={params.id} />
       </Suspense>
     </>

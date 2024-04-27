@@ -17,7 +17,7 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body className={inter.className}>
         <Header></Header>
-        <div className="page-content">
+        <div className="page-content pb-4">
           <Container>
             {children}
           </Container>

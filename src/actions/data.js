@@ -124,6 +124,14 @@ export async function addPlayerToTournament(player, tournamentId) {
 
 }
 
+export async function removePlayerFromTournament(player, tournamentId) {
+    const sqlData = await sql`DELETE FROM PARTICIPACION 
+    WHERE ID_JUGADOR = ${player} AND ID_TORNEO = ${tournamentId}`;
+
+    console.log(sqlData)
+    return parseReponse(sqlData);
+}
+
 function parseReponse(response) {
     if (response.rowCount == 1) {
         return { success: true };
