@@ -1,7 +1,7 @@
 "use server";
 import { sql } from '@vercel/postgres';
-import { unstable_noStore as noStore } from 'next/cache';
 import md5 from "md5";
+import { cookies } from 'next/headers'
 
 
 export async function getUser(nick, password) {
@@ -25,7 +25,7 @@ export async function createTournament(data) {
 
 
 export async function getTournament(id) {
-    noStore();
+    const _cookies = cookies();
     if (!isNaN(id) && parseInt(id) > 0) {
         const sqlData = await sql`SELECT * FROM TORNEOS WHERE ID = ${`${id}`}`;
         if (sqlData.rows.length) {
@@ -38,7 +38,7 @@ export async function getTournament(id) {
 }
 
 export async function deleteTournament(id) {
-    noStore();
+    const _cookies = cookies()
     if (!isNaN(id) && parseInt(id) > 0) {
         const sqlData = await sql`DELETE FROM TORNEOS WHERE ID = ${`${id}`}`;
         if (sqlData.rowCount === 1) {
@@ -65,7 +65,7 @@ export async function updateTournament(data) {
 }
 
 export async function getAllTournaments() {
-    noStore();
+    const _cookies = cookies()
     const sqlData = await sql`SELECT *
     FROM torneos`;
 
@@ -77,7 +77,7 @@ export async function getAllTournaments() {
 }
 
 export async function getTournamentPlayers(id) {
-    noStore();
+    const _cookies = cookies()
     if (!isNaN(id) && parseInt(id) > 0) {
         const sqlData = await sql`SELECT J.ID, J.NOMBRE, J.EMAIL, J.MOVIL, J.RANKING
         FROM JUGADOR J
