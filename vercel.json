@@ -1,16 +1,8 @@
 {
   "rewrites": [
-    {
-      "source": "/(.*)",
-      "destination": "/index.html"
-    },
-    {
-      "source": "/tournament/:id",
-      "destination": "/tournament/[id]/index.html"
-    },
-    {
-      "source": "/update-tournament/:id",
-      "destination": "/update-tournament/[id]/index.html"
-    }
+    // {
+    //   "source": "/(.*)",
+    //   "destination": "/index.html"
+    // }
   ]
 }
