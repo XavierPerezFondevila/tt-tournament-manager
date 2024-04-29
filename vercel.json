@@ -3,6 +3,14 @@
     {
       "source": "/(.*)",
       "destination": "/index.html"
+    },
+    {
+      "source": "/tournament/*",
+      "destination": "/tournament/[id]/index.html"
+    },
+    {
+      "source": "/update-tournament/*",
+      "destination": "/update-tournament/[id]/index.html"
     }
   ]
 }
