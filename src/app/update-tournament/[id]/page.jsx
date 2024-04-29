@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import UpdateTournamentForm from "@/app/components/addUpdateTournamentForm/updateTournamentForm";
 
-export default async function page({ params }) {
+export default function Page({ params }) {
   return (
     <>
       <h1 className="title text-center mb-4">Modificar Torneo</h1>

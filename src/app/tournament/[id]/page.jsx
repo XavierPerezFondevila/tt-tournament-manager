@@ -2,7 +2,7 @@ import TournamentView from "@/app/components/tournamentView/tournamentView";
 import TournamentViewBottom from "@/app/components/tournamentView/tournamentViewBottom";
 import { Suspense } from "react";
 
-export default async function page({ params }) {
+export default function Page({ params }) {
   return (
     <>
       <h1 className="title text-center mb-4">Datos del torneo</h1>
