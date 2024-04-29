@@ -35,7 +35,8 @@ export default function TournamentPlayersTable({ players, tournamentData }) {
       if (result.success) {
         toast.success("Añadido correctamente");
         // update count
-        setCurrentPlayers([...players, newPlayer]);
+        newPlayer["id"] = result.id;
+        setCurrentPlayers([...currentPlayers, newPlayer]);
         updateTableOrderNums(document.querySelector(".table"));
         // insert into table
       } else {
@@ -57,8 +58,6 @@ export default function TournamentPlayersTable({ players, tournamentData }) {
       setCurrentPlayers(
         currentPlayers.filter((player) => player.id !== playerId)
       );
-
-      console.log(currentPlayers.filter((player) => player.id !== playerId));
     } else {
       toast.error("No se ha podido eliminar el jugador seleccionado");
     }
