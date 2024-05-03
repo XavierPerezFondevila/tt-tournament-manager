@@ -79,7 +79,7 @@ export async function getAllTournaments() {
 export async function getTournamentPlayers(id) {
     noStore();
     if (!isNaN(id) && parseInt(id) > 0) {
-        const sqlData = await sql`SELECT J.ID, J.NOMBRE, J.EMAIL, J.MOVIL, J.RANKING
+        const sqlData = await sql`SELECT J.ID, J.NOMBRE, J.EMAIL, J.MOVIL, J.RANKING, P.GRUPO
         FROM JUGADOR J
         JOIN PARTICIPACION P ON J.ID = P.ID_JUGADOR
         WHERE P.ID_TORNEO = ${`${id}`}
@@ -130,8 +130,44 @@ export async function removePlayerFromTournament(player, tournamentId) {
     const sqlData = await sql`DELETE FROM PARTICIPACION 
     WHERE ID_JUGADOR = ${player} AND ID_TORNEO = ${tournamentId}`;
 
-    console.log(sqlData)
     return parseReponse(sqlData);
+}
+
+export async function getGroupPlayers(tournamentId) {
+    noStore();
+    if (!isNaN(tournamentId) && parseInt(tournamentId) > 0) {
+        const sqlData = await sql`SELECT J.id, J.NOMBRE, J.RANKING, P.GRUPO
+        FROM JUGADOR J 
+        JOIN PARTICIPACION P ON J.id = P.id_jugador
+        WHERE P.id_torneo = ${tournamentId}
+        ORDER BY P.GRUPO, J.RANKING DESC;`;
+
+        return sqlData.rows;
+    }
+
+    return [];
+}
+
+
+export async function getTournamentMatches(tournamentId) {
+    if (!isNaN(tournamentId) && parseInt(tournamentId) > 0) {
+        const sqlData = await sql`SELECT 
+        P.id AS id_partido,
+        J1.nombre AS nombre_jugador1,
+        J2.nombre AS nombre_jugador2,
+        JA.nombre AS nombre_arbitro,
+        P.resultado
+        FROM Partidos P
+        JOIN Jugador J1 ON P.id_jugador1 = J1.id
+        JOIN Jugador J2 ON P.id_jugador2 = J2.id
+        JOIN Jugador JA ON P.id_arbitro = JA.id
+        WHERE P.id_torneo = ${tournamentId}
+        ORDER BY P.id;`;
+
+        return sqlData.rows;
+    }
+
+    return [];
 }
 
 function parseReponse(response) {

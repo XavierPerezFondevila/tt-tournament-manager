@@ -1,18 +1,28 @@
 "use client";
 
-import TournamentGroupsGenerator from "./tournamentGroupsGenerator";
 import TournamentPlayersTable from "./tournamentPlayersTable";
 import Tab from "react-bootstrap/Tab";
 import Tabs from "react-bootstrap/Tabs";
+import { useEffect, useState } from "react";
+import TournamentGroupsTable from "./tournamentGroupsTable";
+import { useSearchParams } from "next/navigation";
 
 export default function TournamentViewBottomTabs({
   tournamentPlayers,
   tournamentData,
+  tournamentMatches,
+  groupPlayers,
 }) {
+  const searchParams = useSearchParams();
+  let defaultKey = searchParams.get("q") || "table";
+  if (!["table", "grupos", "finalPhase"].includes(defaultKey)) {
+    defaultKey = "table";
+  }
+
   return (
     <>
       <Tabs
-        defaultActiveKey="table"
+        defaultActiveKey={defaultKey}
         id="uncontrolled-tab-example"
         className="mb-3"
       >
@@ -23,7 +33,10 @@ export default function TournamentViewBottomTabs({
           />
         </Tab>
         <Tab eventKey="grupos" title="Grupos">
-          Aquí van los grupos
+          <TournamentGroupsTable
+            groupPlayers={groupPlayers}
+            matches={tournamentMatches}
+          />
         </Tab>
         <Tab eventKey="finalPhase" title="Fase final">
           Aqui van los partidos de la fase final

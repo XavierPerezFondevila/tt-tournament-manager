@@ -42,28 +42,32 @@ CREATE TABLE JUGADOR (
 	RANKING INT NOT NULL
 );
 
-INSERT INTO JUGADOR (nombre, email, movil, ranking) VALUES
-('Juan Pérez', 'juanperez@example.com', '123456789', 100),
-('María García', 'mariagarcia@example.com', '987654321', 200),
-('Pedro Martínez', 'pedromartinez@example.com', '111222333', 300),
-('Ana López', 'analopez@example.com', '444555666', 400),
-('Luis Rodríguez', 'luisrodriguez@example.com', '777888999', 500),
-('Laura Sánchez', 'laurasanchez@example.com', '666555444', 600),
-('Carlos Gómez', 'carlosgomez@example.com', '999888777', 700),
-('Sofía Martín', 'sofiamartin@example.com', '222333444', 800),
-('Miguel Fernández', 'miguelfernandez@example.com', '111444777', 900),
-('Elena Pérez', 'elenaperez@example.com', '555444333', 1000),
-('Daniel Ruiz', 'danielruiz@example.com', '333222111', 1100),
-('Lucía Gutiérrez', 'luciagutierrez@example.com', '999111222', 1200),
-('Pablo Serrano', 'pabloserrano@example.com', '888777666', 1300),
-('Andrea Torres', 'andreatorres@example.com', '777666555', 1400),
-('Javier Jiménez', 'javierjimenez@example.com', '222111000', 1500),
-('Rosa López', 'rosalopez@example.com', '555666777', 110),
-('Diego Pérez', 'diegoperez@example.com', '888999000', 220),
-('Marina Rodríguez', 'marinarodriguez@example.com', '123456789', 330),
-('Alberto Gómez', 'albertogomez@example.com', '987654321', 440),
-('Carmen Sánchez', 'carmensanchez@example.com', '111222333', 550),
-('Jorge Martínez', 'jorgemartinez@example.com', '444555666', 660);
+INSERT INTO jugador (nombre, email, movil, ranking) VALUES
+('Jugador 1', 'jugador1@example.com', '1234567890', 457),
+('Jugador 2', 'jugador2@example.com', '2345678901', 825),
+('Jugador 3', 'jugador3@example.com', '3456789012', 312),
+('Jugador 4', 'jugador4@example.com', '4567890123', 1048),
+('Jugador 5', 'jugador5@example.com', '5678901234', 687),
+('Jugador 6', 'jugador6@example.com', '6789012345', 231),
+('Jugador 7', 'jugador7@example.com', '7890123456', 1142),
+('Jugador 8', 'jugador8@example.com', '8901234567', 549),
+('Jugador 9', 'jugador9@example.com', '9012345678', 975),
+('Jugador 10', 'jugador10@example.com', '0123456789', 389),
+('Jugador 11', 'jugador11@example.com', '9876543210', 116),
+('Jugador 12', 'jugador12@example.com', '8765432109', 704),
+('Jugador 13', 'jugador13@example.com', '7654321098', 835),
+('Jugador 14', 'jugador14@example.com', '6543210987', 532),
+('Jugador 15', 'jugador15@example.com', '5432109876', 1021),
+('Jugador 16', 'jugador16@example.com', '4321098765', 256),
+('Jugador 17', 'jugador17@example.com', '3210987654', 913),
+('Jugador 18', 'jugador18@example.com', '2109876543', 641),
+('Jugador 19', 'jugador19@example.com', '1098765432', 743),
+('Jugador 20', 'jugador20@example.com', '0987654321', 398),
+('Jugador 21', 'jugador21@example.com', '9876543210', 1175),
+('Jugador 22', 'jugador22@example.com', '8765432109', 885),
+('Jugador 23', 'jugador23@example.com', '7654321098', 202),
+('Jugador 24', 'jugador24@example.com', '6543210987', 589);
+
 
 
 CREATE TABLE PARTICIPACION (
@@ -72,3 +76,18 @@ CREATE TABLE PARTICIPACION (
     ID_JUGADOR INT REFERENCES JUGADOR(ID),
 	GRUPO VARCHAR(2)
 );
+
+
+CREATE TABLE PARTIDOS (
+    id SERIAL PRIMARY KEY,
+    id_torneo INT,
+    id_jugador1 INT,
+    id_jugador2 INT,
+    id_arbitro INT,
+    resultado TEXT,
+    FOREIGN KEY (id_torneo) REFERENCES Torneos(id),
+    FOREIGN KEY (id_jugador1) REFERENCES Jugador(id),
+    FOREIGN KEY (id_jugador2) REFERENCES Jugador(id),
+    FOREIGN KEY (id_arbitro) REFERENCES Jugador(id)
+);
+
