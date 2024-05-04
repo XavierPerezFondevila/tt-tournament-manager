@@ -39,99 +39,48 @@ export const getSortedByGroupsPlayers = (players) => {
 
 export const generateMatches = (groupPlayers) => {
     let players = groupPlayers.slice();
-    players = players.map(player => { return { ...player, playedBefore: false, refereedBefore: false, refereedCount: 0 }; });
+    players = players.map(player => ({ ...player, playedBefore: false, refereedBefore: false, refereedCount: 0 }));
 
     const matches = [];
 
-    const nMatches = (players.length * (players.length - 1)) / 2;
-    const maxRefereeMatches = Math.ceil(nMatches / players.length);
+    const nPlayers = players.length;
+    const rounds = nPlayers - 1; // Number of rounds needed to complete the schedule
 
-    for (let index = 0; index < nMatches; index++) {
+    let lastReferee = null; // Variable to store the last referee
 
-        const availablePlayers = getAvailablePlayers(players);
-        const matchPlayers = getMatchPlayers(availablePlayers, matches);
-
-
-        // updatePlayersStateToFalse
-        players = players.map(player => { return { ...player, playedBefore: false }; });
-
-        matchPlayers.forEach(matchPlayer => {
-            const playerIndex = players.findIndex(player => {
-                return player.id === matchPlayer.id;
-            });
-
-            if (playerIndex !== -1) {
-                players[playerIndex].playedBefore = true;
-            }
-        });
-
-        const referee = getAvailableReferee(players, maxRefereeMatches, matchPlayers);
-        // updateReferees
-        players = players.map(player => { return { ...player, refereedBefore: false }; });
-        const refereeIndex = players.findIndex(player => player.id === referee.id);
-        if (refereeIndex != -1) {
-            players[refereeIndex].refereedBefore = true;
-            players[refereeIndex].refereedCount = (players[refereeIndex].refereedCount + 1);
+    // Generate matches for each round
+    for (let round = 0; round < rounds; round++) {
+        for (let i = 0; i < nPlayers / 2; i++) {
+            const matchPlayers = [players[i], players[nPlayers - 1 - i]];
+            matches.push({ players: matchPlayers, referee: null });
         }
+        // Rotate players except the first one
+        players.splice(1, 0, players.pop());
 
-        matches.push({ players: matchPlayers, referee: referee });
+        // Assign referees for each match in the round
+        for (const match of matches.slice(round * (nPlayers / 2), (round + 1) * (nPlayers / 2))) {
+            const availableReferees = players.filter(player => (
+                !match.players.includes(player) && // Not one of the players in the match
+                player !== lastReferee && // Not the same as the last referee
+                player.refereedCount < matches.length // Not exceeded maximum allowed matches
+            ));
+            if (availableReferees.length > 0) {
+                const randomReferee = availableReferees[Math.floor(Math.random() * availableReferees.length)];
+                match.referee = randomReferee;
+                randomReferee.refereedCount++;
+                lastReferee = randomReferee; // Update last referee
+            }
+        }
     }
 
     return matches;
-}
-
-const getAvailableReferee = (players, maxRefereeMatches, matchPlayers) => {
-    let availableReferees = undefined;
-    const matchPlayerIds = matchPlayers.map(player => player.id);
-
-    for (let i = 0; i <= maxRefereeMatches; i++) {
-        availableReferees = players.filter(player => player.refereedCount === i && !matchPlayerIds.includes(player.id));
-        if (availableReferees.length !== 0) {
-            break;
-        }
-    }
-
-    const availableReferee = availableReferees.find(player => {
-        return player.refereedBefore === false && player.refereedCount <= maxRefereeMatches;
-    });
-
-    return availableReferee;
-
 };
 
-const isNonRepeatedMatch = (players, matches) => {
-    const isRepeatedMatch = false;
-
-    const currentMatchPlayersId = players.map(player => player.id).sort();
-
-    matches.some(match => {
-        const matchPlayersId = match.players.map(player => player.id).sort();
-        return matchPlayersId === currentMatchPlayersId;
-    });
-
+export const getMatchesByGroup = (matches, group) => {
+    return matches.filter(match => match.grupo === group);
 };
 
-const getMatchPlayers = (players, matches) => {
-    let player1 = undefined;
-    let player2 = undefined;
-    let matchPlayers = undefined;
-    do {
-        player1 = players[Math.floor(Math.random() * players.length)];
-
-        do {
-            player2 = players[Math.floor(Math.random() * players.length)];
-        } while (player2.id === player1.id);
-
-        matchPlayers = [player1, player2];
-
-    } while (isNonRepeatedMatch(matchPlayers, matches))
-
-    return matchPlayers;
-
-};
-
-const getAvailablePlayers = (players) => {
-    const availablePlayers = players.filter(player => player["playedBefore"] === false);
-
-    return availablePlayers;
+export const isPdfPage = (path) => {
+    const tournamentGroupRegex = /\/tournament\/\d+\/groups\/[A-Z]/;
+    return tournamentGroupRegex.test(path);
 };

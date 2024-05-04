@@ -153,14 +153,19 @@ export async function getTournamentMatches(tournamentId) {
     if (!isNaN(tournamentId) && parseInt(tournamentId) > 0) {
         const sqlData = await sql`SELECT 
         P.id AS id_partido,
+        J1.id AS id_jugador1,
         J1.nombre AS nombre_jugador1,
+        J2.id AS id_jugador2,
         J2.nombre AS nombre_jugador2,
+        JA.id AS id_arbitro,
         JA.nombre AS nombre_arbitro,
-        P.resultado
+        P.resultado,
+        PR.grupo
         FROM Partidos P
         JOIN Jugador J1 ON P.id_jugador1 = J1.id
         JOIN Jugador J2 ON P.id_jugador2 = J2.id
         JOIN Jugador JA ON P.id_arbitro = JA.id
+        JOIN Participacion PR ON J1.id = PR.id_jugador
         WHERE P.id_torneo = ${tournamentId}
         ORDER BY P.id;`;
 

@@ -30,11 +30,12 @@ export const generateTournamentGroups = async (players, numGroups, tournamentSiz
     }
 
     try {
+        // delete players and tourney from partidos
+        const sqlDeleteData = await sql`DELETE FROM PARTIDOS WHERE ID_TORNEO = ${tournamentId}`;
         for (let index = 0; index < newArray.length; index++) {
             const group = newArray[index];
             const playersId = group.map(player => parseInt(player.id));
             const sqlData = await sql`UPDATE participacion SET grupo = ${groups[index].toUpperCase()} WHERE id_jugador = ANY(${playersId})`;
-            // delete players and tourney from partidos
             const matches = generateMatches(group);
             for (let index = 0; index < matches.length; index++) {
                 const sqlData = await sql`INSERT INTO PARTIDOS (id_torneo, id_jugador1, id_jugador2, id_arbitro) 

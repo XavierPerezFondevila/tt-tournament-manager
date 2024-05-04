@@ -4,8 +4,8 @@ import TournamentPlayersTable from "./tournamentPlayersTable";
 import Tab from "react-bootstrap/Tab";
 import Tabs from "react-bootstrap/Tabs";
 import { useEffect, useState } from "react";
-import TournamentGroupsTable from "./tournamentGroupsTable";
 import { useSearchParams } from "next/navigation";
+import TournamentGroupTables from "./tournamentGroupTables";
 
 export default function TournamentViewBottomTabs({
   tournamentPlayers,
@@ -33,9 +33,10 @@ export default function TournamentViewBottomTabs({
           />
         </Tab>
         <Tab eventKey="grupos" title="Grupos">
-          <TournamentGroupsTable
+          <TournamentGroupTables
             groupPlayers={groupPlayers}
             matches={tournamentMatches}
+            tournamentId={tournamentData.id}
           />
         </Tab>
         <Tab eventKey="finalPhase" title="Fase final">
