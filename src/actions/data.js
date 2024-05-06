@@ -175,6 +175,14 @@ export async function getTournamentMatches(tournamentId) {
     return [];
 }
 
+export async function updateMatchResult(result, matchId) {
+    const sqlData = await sql`UPDATE partidos SET 
+    resultado = ${`${result}`}
+    WHERE id = ${`${matchId}`};`;
+
+    return parseReponse(sqlData);
+}
+
 function parseReponse(response) {
     if (response.rowCount == 1) {
         return { success: true };

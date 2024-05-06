@@ -1,0 +1,42 @@
+@media(max-width: 991px) {
+    #result-modal table {
+        display: flex !important;
+        flex-wrap: wrap;
+        margin: 0;
+    }
+    
+    #result-modal table :is(thead, thead tr, tbody, tbody tr, tbody tr td){
+        display: flex !important;
+    }
+
+    #result-modal table tbody {
+        flex: 1;
+    }
+
+    #result-modal table :is(thead tr, tbody tr) {
+        flex-direction: column;
+    }
+
+    #result-modal tbody tr td {
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+    }
+
+    #result-modal table :is(thead tr td:not(:first-child), tbody tr td:not(:first-child)){
+        height: 65px;
+    }
+
+    #result-modal table :is(thead tr td:first-child, tbody tr td:first-child) {
+        height: 40px;
+    }
+
+    #result-modal table :is(tfoot, tfoot tr, tfoot td) {
+        width: 100%;
+        display: block;
+    }
+
+    #result-modal table tfoot button {
+        width: 100%;
+    }
+}
