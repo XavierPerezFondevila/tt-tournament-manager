@@ -11,6 +11,7 @@ export default function List({ tournament }) {
     const response = await deleteTournament(id);
     // eliminar el nodo del html :)
     if (response.success) {
+      document.querySelector(`.wrap:has(button[id="${ev.target.id}"]`).remove();
       toast.success("Eliminado Correctamente");
     } else {
       toast.error("Ha habido un error al eliminar el torneo");
@@ -66,6 +67,7 @@ export default function List({ tournament }) {
         </Col>
         <Col xs={12} md={4} className="px-0 px-md-1 my-1 my-md-0">
           <Button
+            id={"tournament" + tournament.id}
             variant="danger"
             className="remove-btn w-100"
             onClick={(ev) => {

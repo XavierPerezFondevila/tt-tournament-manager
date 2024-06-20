@@ -30,18 +30,22 @@ export default function AddUpdateTournamentForm({ action, tournamentData }) {
     let response = undefined;
     if (action === "add") {
       response = await createTournament(filteredFormData);
+      console.log(response?.id);
       if (response?.success) {
         toast.success("Torneo creado Correctamente");
       } else {
         toast.error("Ha habido un error en la creación del torneo");
       }
       setTimeout(() => {
-        location.href = location.origin + "/list-tournaments";
+        window.location.href = `${window.location.origin}/tournament/${response?.id}`;
       }, 2000);
     } else if (action === "update") {
       response = await updateTournament(filteredFormData);
       if (response?.success) {
         toast.success("Modificado Correctamente");
+        setTimeout(() => {
+          window.location.href = `${window.location.origin}/tournament/${tournamentData?.id}`;
+        }, 2000);
       } else {
         toast.error("Ha habido un error en la modificación del torneo");
       }
@@ -137,7 +141,7 @@ export default function AddUpdateTournamentForm({ action, tournamentData }) {
                 />
               </Form.Group>
             </Col>
-            <Col xs={12}>
+            {/* <Col xs={12}>
               <Form.Group className="mb-3" controlId="torunamentMode">
                 <Form.Label>Modo del torneo</Form.Label>
                 <Form.Select
@@ -151,7 +155,7 @@ export default function AddUpdateTournamentForm({ action, tournamentData }) {
                   <option value="DOBLES">Dobles</option>
                 </Form.Select>
               </Form.Group>
-            </Col>
+            </Col> */}
             <Col xs={12} className="d-flex justify-content-center">
               <div className="wrapper col-12 col-md-6">
                 <Button

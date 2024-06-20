@@ -21,10 +21,10 @@ export default function TournamentViewTop({ tournamentData }) {
         <strong>Numero de clasificados por grupos: </strong>
         {tournamentData.num_clasificados}
       </div>
-      <div>
+      {/* <div>
         <strong>Modalidad: </strong>
         {tournamentData.modalidad.toLowerCase()}
-      </div>
+      </div> */}
     </div>
   );
 }

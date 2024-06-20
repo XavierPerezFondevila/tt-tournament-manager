@@ -37,6 +37,7 @@ export default function TournamentViewBottomTabs({
             groupPlayers={groupPlayers}
             matches={tournamentMatches}
             tournamentId={tournamentData.id}
+            tournamentWinnersNum={tournamentData.num_clasificados}
           />
         </Tab>
         <Tab eventKey="finalPhase" title="Fase final">

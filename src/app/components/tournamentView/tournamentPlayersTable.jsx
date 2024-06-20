@@ -21,8 +21,7 @@ export default function TournamentPlayersTable({ players, tournamentData }) {
 
     const newPlayer = {
       nombre: formData.get("playerName"),
-      email: formData.get("playerEmail"),
-      movil: formData.get("playerPhone"),
+      ficha: formData.get("playerFicha") || Date.now() + "-ficha",
       ranking: formData.get("playerRanking"),
     };
 
@@ -36,7 +35,9 @@ export default function TournamentPlayersTable({ players, tournamentData }) {
         toast.success("Añadido correctamente");
         // update count
         newPlayer["id"] = result.id;
-        setCurrentPlayers([...currentPlayers, newPlayer]);
+        setCurrentPlayers(
+          [...currentPlayers, newPlayer].sort((a, b) => b.ranking - a.ranking)
+        );
         updateTableOrderNums(document.querySelector(".table"));
         // insert into table
       } else {
@@ -78,23 +79,14 @@ export default function TournamentPlayersTable({ players, tournamentData }) {
         theme="colored"
         transition={Zoom}
       />
-      {currentPlayers.length !== 0 && (
-        <div className="mb-3">
-          <TournamentGroupsGenerator
-            players={currentPlayers}
-            tournamentData={tournamentData}
-          />
-        </div>
-      )}
       <Form onSubmit={handleRequest} className="tournament-table-form">
         <Table striped bordered hover responsive>
           <thead>
             <tr>
               <th>#</th>
               <th>Nombre</th>
-              <th>Email</th>
-              <th>Teléfono</th>
               <th>Ranking</th>
+              <th>Num. Ficha</th>
               <th></th>
             </tr>
           </thead>
@@ -103,9 +95,10 @@ export default function TournamentPlayersTable({ players, tournamentData }) {
               <tr key={index} className={`player-${player.id}`}>
                 <td className="player-num">{index + 1}</td>
                 <td>{player.nombre}</td>
-                <td>{player.email}</td>
-                <td>{player.movil}</td>
                 <td>{player.ranking}</td>
+                <td>
+                  {player.ficha.includes("-ficha") ? "N/A" : player.ficha}
+                </td>
                 <td>
                   <Button
                     variant="danger"
@@ -135,29 +128,20 @@ export default function TournamentPlayersTable({ players, tournamentData }) {
                   </Form.Group>
                 </td>
                 <td>
-                  <Form.Group controlId="playerEmail">
-                    <Form.Control
-                      type="text"
-                      placeholder="adri.sanchez@gmail.com"
-                      name="playerEmail"
-                    />
-                  </Form.Group>
-                </td>
-                <td>
-                  <Form.Group controlId="playerPhone">
-                    <Form.Control
-                      type="text"
-                      placeholder="666555444"
-                      name="playerPhone"
-                    />
-                  </Form.Group>
-                </td>
-                <td>
                   <Form.Group controlId="playerRanking">
                     <Form.Control
                       type="number"
                       placeholder="1000"
                       name="playerRanking"
+                    />
+                  </Form.Group>
+                </td>
+                <td>
+                  <Form.Group controlId="playerFicha">
+                    <Form.Control
+                      type="text"
+                      placeholder="8373"
+                      name="playerFicha"
                     />
                   </Form.Group>
                 </td>

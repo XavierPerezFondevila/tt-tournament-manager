@@ -19,7 +19,7 @@ export default function TournamentGroupTable({ groupPlayers, groupKey }) {
       {isPdf && <div className="h3 mb-4">Grupo: {groupKey} </div>}
       <Col xs={12} sm={6}>
         {playersByGroup[groupKey][0]?.map((player, index) => (
-          <Row key={player.id} className="border px-0">
+          <Row key={"row-player" + player.id} className="border px-0">
             <Col className="py-2 border-end text-center" xs={2}>
               {index + 1}{" "}
             </Col>
@@ -34,7 +34,7 @@ export default function TournamentGroupTable({ groupPlayers, groupKey }) {
       </Col>
       <Col xs={12} sm={6}>
         {playersByGroup[groupKey][1]?.map((player, index) => (
-          <Row key={player.id} className="border px-0">
+          <Row key={"2-row-player-" + player.id} className="border px-0">
             <Col className="py-2 border-end text-center" xs={2}>
               {index + playersByGroup[groupKey][0].length + 1}
             </Col>

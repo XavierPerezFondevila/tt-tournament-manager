@@ -11,6 +11,12 @@ export default function TournamentGroupsGenerator({ players, tournamentData }) {
       tournamentData.plazas_torneo,
       tournamentData.id
     );
+
+    const uri = new URL(window.location.href);
+
+    uri.searchParams.set("q", "grupos");
+
+    window.location.href = uri;
   };
 
   return (
