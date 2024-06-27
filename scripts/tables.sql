@@ -81,7 +81,9 @@ CREATE TABLE PARTICIPACION (
     ID SERIAL PRIMARY KEY,
     ID_TORNEO INT REFERENCES TORNEOS(ID),
     ID_JUGADOR INT REFERENCES JUGADOR(ID),
-	GRUPO VARCHAR(2)
+	GRUPO VARCHAR(2),
+    CLASIFICADO BOOLEAN DEFAULT FALSE,
+    ORDEN_CLASIFICADO INT
 );
 
 
@@ -92,6 +94,7 @@ CREATE TABLE PARTIDOS (
     id_jugador2 INT,
     id_arbitro INT,
 	ganador int,
+    resultado TEXT,
 	resultado_global VARCHAR(3),
     FOREIGN KEY (id_torneo) REFERENCES Torneos(id),
     FOREIGN KEY (id_jugador1) REFERENCES Jugador(id),
@@ -99,3 +102,14 @@ CREATE TABLE PARTIDOS (
     FOREIGN KEY (id_arbitro) REFERENCES Jugador(id)
 );
 
+
+
+
+    -- newArray = [
+    --     [68, 70, 86, 96, 90],
+    --     [74, 71, 69, 75, 85, 89],
+    --     [77, 92, 88, 79, 83],
+    --     [78, 84, 72, 76, 93, 99],
+    --     [91, 87, 80, 95, 98],
+    --     [81, 82, 73, 94, 97],
+    -- ];

@@ -15,7 +15,7 @@ export default function Header() {
     <div className={clsx("app-header", "mb-4", isPdf && "d-none")}>
       <Container>
         <Row>
-          <div className="wrap">
+          <div className="wrap justify-content-center">
             <Link className="header-link" href="/">
               <Image
                 width={60}
@@ -25,7 +25,7 @@ export default function Header() {
                 className="img-fluid"
               />
             </Link>
-            <LoginForm></LoginForm>
+            {/* <LoginForm></LoginForm> */}
           </div>
         </Row>
       </Container>

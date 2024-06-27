@@ -5,6 +5,14 @@ import { unstable_noStore as noStore } from 'next/cache';
 import { useFetcher } from 'react-router-dom';
 
 
+export async function setPlayerQualified(isQualified, playerId, tournamentId) {
+    const sqlData = await sql`UPDATE PARTICIPACION SET 
+    CLASIFICADO = ${`${isQualified}`}
+    WHERE ID_JUGADOR = ${playerId} AND ID_TORNEO = ${tournamentId}`;
+
+    return parseReponse(sqlData);
+}
+
 export async function getUser(nick, password) {
 
     const data = await sql`SELECT nick
@@ -90,7 +98,7 @@ export async function getAllTournaments() {
 export async function getTournamentPlayers(id) {
     noStore();
     if (!isNaN(id) && parseInt(id) > 0) {
-        const sqlData = await sql`SELECT J.ID, J.NOMBRE, J.ficha, J.RANKING, P.GRUPO
+        const sqlData = await sql`SELECT J.ID, J.NOMBRE, J.ficha, J.RANKING, P.GRUPO, P.CLASIFICADO
         FROM JUGADOR J
         JOIN PARTICIPACION P ON J.ID = P.ID_JUGADOR
         WHERE P.ID_TORNEO = ${`${id}`}
@@ -146,7 +154,7 @@ export async function removePlayerFromTournament(player, tournamentId) {
 export async function getGroupPlayers(tournamentId) {
     noStore();
     if (!isNaN(tournamentId) && parseInt(tournamentId) > 0) {
-        const sqlData = await sql`SELECT J.id, J.NOMBRE, J.RANKING, P.GRUPO
+        const sqlData = await sql`SELECT J.id, J.NOMBRE, J.RANKING, P.GRUPO, P.CLASIFICADO
         FROM JUGADOR J 
         JOIN PARTICIPACION P ON J.id = P.id_jugador
         WHERE P.id_torneo = ${tournamentId}
@@ -170,6 +178,7 @@ export async function getTournamentMatches(tournamentId) {
             JA.id AS id_arbitro,
             JA.nombre AS nombre_arbitro,
             P.ganador,
+            P.resultado,
             P.resultado_global,
             PR.grupo
         FROM 
@@ -196,10 +205,13 @@ export async function getTournamentMatches(tournamentId) {
     return [];
 }
 
-export async function updateMatchResult(globalResult, winner, matchId) {
+export async function updateMatchResult(matchPoints, globalResult, idWinner, matchId) {
+
+
     const sqlData = await sql`UPDATE partidos SET 
+    resultado = ${matchPoints},
     resultado_global = ${`${globalResult}`},
-    ganador = ${`${winner}`}
+    ganador = ${`${idWinner}`}
     WHERE id = ${`${matchId}`};`;
 
     return parseReponse(sqlData);

@@ -23,7 +23,6 @@ export default function TournamentGroupTables({
 }) {
   let areGroupsCreated = false;
   const [currentMatches, setCurrentMatches] = useState(matches);
-
   if (groupPlayers.length && groupPlayers[0].grupo !== null) {
     areGroupsCreated = true;
   }
@@ -41,13 +40,21 @@ export default function TournamentGroupTables({
   };
 
   const assignGroupStandings = () => {
+    const players = groupStandings.length ? groupStandings : groupPlayers;
+
     const orderedStandings = getGroupStandings(
       matches,
       selectedGroupKey,
-      groupPlayers
+      players
     );
+
     setGroupStandings(orderedStandings);
   };
+
+  useEffect(() => {
+    // Here you can perform any actions that depend on groupStandings
+    console.log("Updated groupStandings:", groupStandings);
+  }, [groupStandings]); // This useEffect runs whenever groupStandings changes
 
   return (
     <div>
@@ -113,10 +120,15 @@ export default function TournamentGroupTables({
             <ViewGroupStateModal
               groupkey={selectedGroupKey}
               show={modalShow}
-              onShow={assignGroupStandings}
-              onHide={() => {
-                setModalShow(false);
+              tournamentid={tournamentId}
+              onHide={(showState, updatedPlayers) => {
+                if (showState && updatedPlayers) {
+                  setGroupStandings(updatedPlayers);
+                  console.log(groupStandings);
+                }
+                setModalShow(showState);
               }}
+              onShow={assignGroupStandings}
               standings={groupStandings}
             />
           </>

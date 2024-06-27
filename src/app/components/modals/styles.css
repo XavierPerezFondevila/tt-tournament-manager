@@ -1,4 +1,4 @@
-/* @media(max-width: 991px) {
+@media(max-width: 991px) {
     #result-modal table {
         display: flex !important;
         flex-wrap: wrap;
@@ -39,7 +39,7 @@
     #result-modal table tfoot button {
         width: 100%;
     }
-} */
+}
 
 .standing-modal .modal-dialog {
     --bs-modal-width: 800px;

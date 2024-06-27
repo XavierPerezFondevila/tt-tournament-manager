@@ -8,7 +8,7 @@ export const updateTableOrderNums = (table) => {
 };
 
 export const getGroupStandings = (matches, selectedGroupKey, groupPlayers) => {
-    // Assume `getMatchesByGroup`, `matches`, and `selectedGroupKey` are defined and have valid data
+    // Retrieve matches for the selected group
     const groupMatches = getMatchesByGroup(matches, selectedGroupKey);
     const standings = {};
 
@@ -16,11 +16,14 @@ export const getGroupStandings = (matches, selectedGroupKey, groupPlayers) => {
     groupMatches.forEach((match) => {
         const players = [match.id_jugador1, match.id_jugador2];
         if (match.resultado_global?.length) {
-            // Iterate through each player in the match
+            // Split the match result to get sets won by each player
+            const matchResult = match.resultado_global.split("-").map(Number);
+            const puntosResult = match.resultado.split(",");
+
+            // Update stats for each player in the match
             players.forEach((player, index) => {
-                const matchResult = match.resultado_global.split("-");
-                const setsGanados = parseInt(matchResult[index], 10);
-                const setsPerdidos = parseInt(matchResult[1 - index], 10);
+                const setsGanados = matchResult[index];
+                const setsPerdidos = matchResult[1 - index];
 
                 // Initialize player stats if not already present
                 if (!(player in standings)) {
@@ -29,9 +32,12 @@ export const getGroupStandings = (matches, selectedGroupKey, groupPlayers) => {
                     );
                     standings[player] = {
                         nombre: filteredPlayer.nombre,
+                        clasificado: filteredPlayer.clasificado,
                         partidasGanadas: 0,
                         setsGanados: 0,
                         setsPerdidos: 0,
+                        puntosGanados: 0,
+                        puntosPerdidos: 0,
                         id: player,
                     };
                 }
@@ -43,81 +49,71 @@ export const getGroupStandings = (matches, selectedGroupKey, groupPlayers) => {
                 standings[player].setsGanados += setsGanados;
                 standings[player].setsPerdidos += setsPerdidos;
             });
+
+            // Update points stats
+            puntosResult.forEach((resultado) => {
+                const puntosSplit = resultado.split("-");
+                console.log(puntosSplit)
+                standings[players[0]].puntosGanados += parseInt(puntosSplit[0]) || 0;
+                standings[players[1]].puntosPerdidos += parseInt(puntosSplit[1]) || 0;
+            });
         }
     });
 
-    // Calculate coeficiente for each player
+    // Calculate coefficient for each player
     Object.values(standings).forEach((player) => {
-        player.coeficiente = player.setsGanados / player.setsPerdidos;
+        player.coeficiente = player.setsGanados / (player.setsPerdidos || 1); // Avoid division by zero
     });
 
-    // Order standings by coeficiente
+    // Sort players by coefficient, then by (puntosGanados - puntosPerdidos) difference
     let orderedStandings = Object.values(standings).sort(
-        (playerA, playerB) => playerB.coeficiente - playerA.coeficiente
+        (playerA, playerB) => {
+            const coefDiff = playerB.coeficiente - playerA.coeficiente;
+            if (coefDiff !== 0) {
+                return coefDiff;
+            }
+            return (playerB.puntosGanados - playerB.puntosPerdidos) - (playerA.puntosGanados - playerA.puntosPerdidos);
+        }
     );
 
-    // Resolve ties by adding 0.1 to the coeficiente of the player who won the match between tied players
+    // Resolve ties by adding 0.1 to the coefficient of the player who won the match between tied players
     orderedStandings = resolveCoeficientTies(orderedStandings, groupMatches);
 
     // Final sorting after tie resolution
     orderedStandings.sort(
-        (playerA, playerB) => playerB.coeficiente - playerA.coeficiente
+        (playerA, playerB) => {
+            const coefDiff = playerB.coeficiente - playerA.coeficiente;
+            if (coefDiff !== 0) {
+                return coefDiff;
+            }
+            return (playerB.puntosGanados - playerB.puntosPerdidos) - (playerA.puntosGanados - playerA.puntosPerdidos);
+        }
     );
 
     return orderedStandings;
 };
 
 const resolveCoeficientTies = (orderedStandings, groupMatches) => {
-    // Step 1: Create a map to store coefficients and associated players
-    const coefMap = new Map();
-    // Step 2: Populate the map
-    orderedStandings.forEach(player => {
-        const { coeficiente, nombre, id } = player;
-        if (!coefMap.has(coeficiente)) {
-            coefMap.set(coeficiente, []);
-        }
-        coefMap.get(coeficiente).push({ nombre, id });
-    });
+    // Implement logic to resolve ties
+    for (let i = 0; i < orderedStandings.length - 1; i++) {
+        if (orderedStandings[i].coeficiente === orderedStandings[i + 1].coeficiente) {
+            const playerA = orderedStandings[i];
+            const playerB = orderedStandings[i + 1];
 
-    // Step 3: Filter the map to find coefficients with more than one player
-    const duplicates = [];
-    coefMap.forEach((players, coeficiente) => {
-        if (players.length > 1) {
-            duplicates.push({ coeficiente, players });
-        }
-    });
-
-    if (duplicates.length) {
-        orderedStandings.forEach((standingPlayer, index) => {
-            const tiedPlayers = orderedStandings.filter(
-                (player) =>
-                    player.coeficiente === standingPlayer.coeficiente &&
-                    player.id !== standingPlayer.id
+            const match = groupMatches.find(match =>
+                (match.id_jugador1 === playerA.id && match.id_jugador2 === playerB.id) ||
+                (match.id_jugador1 === playerB.id && match.id_jugador2 === playerA.id)
             );
 
-            tiedPlayers.forEach((tiedPlayer) => {
-                const match = groupMatches.find(
-                    (match) =>
-                        (match.id_jugador1 == standingPlayer.id &&
-                            match.id_jugador2 == tiedPlayer.id) ||
-                        (match.id_jugador2 == standingPlayer.id &&
-                            match.id_jugador1 == tiedPlayer.id)
-                );
-
-                // There is always a match, so no need to check for undefined
-                if (match.ganador === standingPlayer.id) {
-                    standingPlayer.coeficiente += 0.1;
+            if (match) {
+                if (match.ganador === playerA.id) {
+                    playerA.coeficiente += 0.1;
+                } else if (match.ganador === playerB.id) {
+                    playerB.coeficiente += 0.1;
                 }
-            });
-        });
-
-        const completedMatches = groupMatches.filter(match => match?.resultado_global);
-
-        if (completedMatches.length === groupMatches.length) {
-            return resolveCoeficientTies(orderedStandings, groupMatches);
+            }
         }
     }
-
     return orderedStandings;
 };
 

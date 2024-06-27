@@ -42,30 +42,26 @@ export default function TournamentGroupMatchesTable({
               <div>JUGADOR1</div>
               <div>JUGADOR2</div>
             </td>
-            {isPdfRoute && (
-              <>
-                <td className="text-center align-middle small">
-                  <div>1r</div>
-                  <div>JUEGO</div>
-                </td>
-                <td className="text-center align-middle small">
-                  <div>2ndo</div>
-                  <div>JUEGO</div>
-                </td>
-                <td className="text-center align-middle small">
-                  <div>3r</div>
-                  <div>JUEGO</div>
-                </td>
-                <td className="text-center align-middle small">
-                  <div>4to</div>
-                  <div>JUEGO</div>
-                </td>
-                <td className="text-center align-middle small">
-                  <div>5to</div>
-                  <div>JUEGO</div>
-                </td>
-              </>
-            )}
+            <td className="text-center align-middle small">
+              <div>1r</div>
+              <div>JUEGO</div>
+            </td>
+            <td className="text-center align-middle small">
+              <div>2ndo</div>
+              <div>JUEGO</div>
+            </td>
+            <td className="text-center align-middle small">
+              <div>3r</div>
+              <div>JUEGO</div>
+            </td>
+            <td className="text-center align-middle small">
+              <div>4to</div>
+              <div>JUEGO</div>
+            </td>
+            <td className="text-center align-middle small">
+              <div>5to</div>
+              <div>JUEGO</div>
+            </td>
             <td
               className="text-center align-middle small"
               style={{ minWidth: "20ch" }}
@@ -93,13 +89,30 @@ export default function TournamentGroupMatchesTable({
                 <div>{match.nombre_jugador1}</div>
                 <div>{match.nombre_jugador2}</div>
               </td>
-              {isPdfRoute &&
-                Array.from({ length: 5 }).map((_, index) => (
-                  <td
-                    key={"non-result" + index + match.id_partido}
-                    className="text-center align-middle"
-                  ></td>
-                ))}
+              {match.resultado && !isPdfRoute
+                ? match.resultado.split(",").map((result, index) => {
+                    const [part1, part2] = result.split("-");
+                    // Check if both parts are not equal to zero
+                    if (parseInt(part1) !== 0 || parseInt(part2) !== 0) {
+                      return (
+                        <td key={index} className="text-center align-middle">
+                          <div>{part1}</div>{" "}
+                          <div
+                            className="separator"
+                            style={{ lineHeight: "10px" }}
+                          >
+                            -
+                          </div>
+                          <div>{part2}</div>
+                        </td>
+                      );
+                    } else {
+                      return <td key={index}></td>;
+                    }
+                  })
+                : Array.from({ length: 5 }).map((_, index) => (
+                    <td key={index} className="text-center align-middle"></td>
+                  ))}
               <td
                 className="text-center align-middle"
                 style={{ minWidth: "20ch" }}

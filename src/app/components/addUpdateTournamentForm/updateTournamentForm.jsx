@@ -9,7 +9,7 @@ export default async function UpdateTournamentForm({ formId }) {
       {data ? (
         <AddUpdateTournamentForm action="update" tournamentData={data} />
       ) : (
-        <div class="empty-text text-center text-secondary">
+        <div className="empty-text text-center text-secondary">
           No se ha encontrado ningún torneo...
         </div>
       )}

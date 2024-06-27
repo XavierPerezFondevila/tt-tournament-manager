@@ -23,7 +23,7 @@ export const generateTournamentGroups = async (players, numGroups, tournamentSiz
         }
     }
 
-    const newArray = [];
+    let newArray = [];
     let q = 0;
 
     for (let i = 0; i < tournamentSize / 2; i++) {
@@ -36,6 +36,246 @@ export const generateTournamentGroups = async (players, numGroups, tournamentSiz
         newArray[q].push(clonedPlayers.shift(), clonedPlayers.pop());
         q++;
     }
+
+    newArray = [
+        [
+            {
+                "id": 68,
+                "nombre": "Francesc masip",
+                "ficha": "1719081719268-ficha",
+                "ranking": 2100,
+                "grupo": "A"
+            },
+            {
+                "id": 70,
+                "nombre": "Viacheslav Volodin",
+                "ficha": "1719082290970-ficha",
+                "ranking": 1200,
+                "grupo": "A"
+            },
+            {
+                "id": 86,
+                "nombre": "Albert Solé",
+                "ficha": "1719082863345-ficha",
+                "ranking": 850,
+                "grupo": "A"
+            },
+            {
+                "id": 96,
+                "nombre": "Andy Ortiz",
+                "ficha": "1719083106669-ficha",
+                "ranking": 200,
+                "grupo": "A"
+            },
+            {
+                "id": 90,
+                "nombre": "Jordi Torroja",
+                "ficha": "1719082986333-ficha",
+                "ranking": 100,
+                "grupo": "A"
+            }
+        ],
+        [
+            {
+                "id": 74,
+                "nombre": "Gabriel Oliveras",
+                "ficha": "1719082411525-ficha",
+                "ranking": 1750,
+                "grupo": "B"
+            },
+            {
+                "id": 71,
+                "nombre": "Eugenia Plenidina",
+                "ficha": "1719082323858-ficha",
+                "ranking": 1200,
+                "grupo": "B"
+            },
+            {
+                "id": 69,
+                "nombre": "Angel Ramírez",
+                "ficha": "1719082262196-ficha",
+                "ranking": 810,
+                "grupo": "B"
+            },
+            {
+                "id": 75,
+                "nombre": "David García",
+                "ficha": "1719082442320-ficha",
+                "ranking": 660,
+                "grupo": "B"
+            },
+            {
+                "id": 85,
+                "nombre": "Dani Santpere",
+                "ficha": "1719082840182-ficha",
+                "ranking": 200,
+                "grupo": "B"
+            },
+            {
+                "id": 89,
+                "nombre": "Juli Roca",
+                "ficha": "1719082969989-ficha",
+                "ranking": 100,
+                "grupo": "B"
+            }
+        ],
+        [
+            {
+                "id": 77,
+                "nombre": "Dani Luco",
+                "ficha": "1719082518344-ficha",
+                "ranking": 1300,
+                "grupo": "C"
+            },
+            {
+                "id": 92,
+                "nombre": "Jose Martínez",
+                "ficha": "1719083035207-ficha",
+                "ranking": 1200,
+                "grupo": "C"
+            },
+            {
+                "id": 88,
+                "nombre": "Felix Pons",
+                "ficha": "1719082947442-ficha",
+                "ranking": 700,
+                "grupo": "C"
+            },
+            {
+                "id": 79,
+                "nombre": "Victor Castañeda",
+                "ficha": "1719082562828-ficha",
+                "ranking": 680,
+                "grupo": "C"
+            },
+            {
+                "id": 83,
+                "nombre": "María José Rodríguez",
+                "ficha": "1719082742675-ficha",
+                "ranking": 130,
+                "grupo": "C"
+            }
+        ],
+        [
+            {
+                "id": 78,
+                "nombre": "Néstor Troncoso",
+                "ficha": "1719082530546-ficha",
+                "ranking": 1300,
+                "grupo": "D"
+            },
+            {
+                "id": 84,
+                "nombre": "Frederick Mayeux",
+                "ficha": "1719082807236-ficha",
+                "ranking": 1010,
+                "grupo": "D"
+            },
+            {
+                "id": 72,
+                "nombre": "Jose Ortego",
+                "ficha": "1719082352166-ficha",
+                "ranking": 685,
+                "grupo": "D"
+            },
+            {
+                "id": 76,
+                "nombre": "Bernat Ferrer",
+                "ficha": "1719082468730-ficha",
+                "ranking": 680,
+                "grupo": "D"
+            },
+            {
+                "id": 93,
+                "nombre": "Jose Martínez",
+                "ficha": "1719083046354-ficha",
+                "ranking": 250,
+                "grupo": "D"
+            },
+            {
+                "id": 99,
+                "nombre": "Lluc Martínez",
+                "ficha": "1719083138151-ficha",
+                "ranking": 200,
+                "grupo": "D"
+            }
+        ],
+        [
+            {
+                "id": 91,
+                "nombre": "Marc Flores",
+                "ficha": "1719083011364-ficha",
+                "ranking": 1300,
+                "grupo": "E"
+            },
+            {
+                "id": 87,
+                "nombre": "Eduard Señor",
+                "ficha": "1719082921634-ficha",
+                "ranking": 980,
+                "grupo": "E"
+            },
+            {
+                "id": 80,
+                "nombre": "Lluis Vilagran",
+                "ficha": "1719082653351-ficha",
+                "ranking": 400,
+                "grupo": "E"
+            },
+            {
+                "id": 95,
+                "nombre": "Juan Carlos",
+                "ficha": "1719083095969-ficha",
+                "ranking": 250,
+                "grupo": "C"
+            },
+            {
+                "id": 98,
+                "nombre": "Oscar Segura",
+                "ficha": "1719083129530-ficha",
+                "ranking": 200,
+                "grupo": "E"
+            }
+        ],
+        [
+            {
+                "id": 81,
+                "nombre": "Joan Serrer",
+                "ficha": "1719082693552-ficha",
+                "ranking": 1250,
+                "grupo": "F"
+            },
+            {
+                "id": 82,
+                "nombre": "Chema Escudero",
+                "ficha": "1719082723313-ficha",
+                "ranking": 890,
+                "grupo": "F"
+            },
+            {
+                "id": 73,
+                "nombre": "Esteban Maldonado",
+                "ficha": "1719082381961-ficha",
+                "ranking": 650,
+                "grupo": "A"
+            },
+            {
+                "id": 94,
+                "nombre": "Josep Garrido",
+                "ficha": "1719083078387-ficha",
+                "ranking": 460,
+                "grupo": "F"
+            },
+            {
+                "id": 97,
+                "nombre": "Dan Baraldés",
+                "ficha": "1719083121350-ficha",
+                "ranking": 200,
+                "grupo": "F"
+            }
+        ]
+    ];
+
 
     try {
         // delete players and tourney from partidos
