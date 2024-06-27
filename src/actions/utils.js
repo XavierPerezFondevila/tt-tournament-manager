@@ -260,20 +260,19 @@ function organizeMatchesWithReferees(matches, players) {
     const possibleFirstReferees = players.filter(player => player !== firstMatchPlayer1 && player !== firstMatchPlayer2);
     let referee = possibleFirstReferees[Math.floor(Math.random() * possibleFirstReferees.length)];
     refereeCount.set(referee, 1);
-
     matchesWithReferees.push({ players: matchSequence[0], referee });
 
     for (let i = 1; i < matchSequence.length; i++) {
         const currentMatch = matchSequence[i];
         const [currentPlayer1, currentPlayer2] = currentMatch;
 
-        // Select the player from previous matches who has not refereed yet and is not playing in the current match
-        const previousPlayers = new Set(matchSequence.slice(0, i).flat());
-        const eligibleReferees = Array.from(previousPlayers).filter(player =>
-            player !== currentPlayer1 && player !== currentPlayer2 && !refereeCount.has(player));
+        // Find referees who have not refereed before
+        const previousReferees = matchesWithReferees.map(match => match.referee);
+        const eligibleReferees = players.filter(player =>
+            !previousReferees.includes(player) && player !== currentPlayer1 && player !== currentPlayer2);
 
         if (eligibleReferees.length === 0) {
-            // If no eligible referees, find a player who has refereed the least and is not playing in the current match
+            // If no eligible referees, find a player who has refereed the least
             const nonPlayingPlayers = players.filter(player =>
                 player !== currentPlayer1 && player !== currentPlayer2);
             nonPlayingPlayers.sort((a, b) => refereeCount.get(a) - refereeCount.get(b));
@@ -288,6 +287,7 @@ function organizeMatchesWithReferees(matches, players) {
 
     return matchesWithReferees;
 }
+
 
 
 export const getMatchesByGroup = (matches, group) => {
