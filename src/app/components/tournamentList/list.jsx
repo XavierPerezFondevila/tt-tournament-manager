@@ -65,7 +65,7 @@ export default function List({ tournament }) {
             Ver torneo
           </Link>
         </Col>
-        <Col xs={12} md={4} className="px-0 px-md-1 my-1 my-md-0">
+        {/* <Col xs={12} md={4} className="px-0 px-md-1 my-1 my-md-0">
           <Button
             id={"tournament" + tournament.id}
             variant="danger"
@@ -76,7 +76,7 @@ export default function List({ tournament }) {
           >
             Eliminar
           </Button>
-        </Col>
+        </Col>  */}
       </Row>
     </div>
   );

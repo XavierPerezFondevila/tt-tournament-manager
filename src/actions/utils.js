@@ -11,10 +11,12 @@ export const getGroupStandings = (matches, selectedGroupKey, groupPlayers) => {
     // Retrieve matches for the selected group
     const groupMatches = getMatchesByGroup(matches, selectedGroupKey);
     const standings = {};
-
+    console.log(selectedGroupKey)
+    console.log(groupPlayers)
     // Iterate through each match in the group
     groupMatches.forEach((match) => {
         const players = [match.id_jugador1, match.id_jugador2];
+
         if (match.resultado_global?.length) {
             // Split the match result to get sets won by each player
             const matchResult = match.resultado_global.split("-").map(Number);
@@ -53,7 +55,7 @@ export const getGroupStandings = (matches, selectedGroupKey, groupPlayers) => {
             // Update points stats
             puntosResult.forEach((resultado) => {
                 const puntosSplit = resultado.split("-");
-                console.log(puntosSplit)
+                // console.log(puntosSplit)
                 standings[players[0]].puntosGanados += parseInt(puntosSplit[0]) || 0;
                 standings[players[1]].puntosPerdidos += parseInt(puntosSplit[1]) || 0;
             });

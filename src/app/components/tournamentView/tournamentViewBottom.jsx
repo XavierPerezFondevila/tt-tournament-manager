@@ -1,4 +1,5 @@
 import {
+  getFinalPhaseMatches,
   getGroupPlayers,
   getTournament,
   getTournamentMatches,
@@ -11,6 +12,7 @@ export default async function TournamentViewBottom({ tournamentId }) {
   const tournamentData = await getTournament(tournamentId);
   const groupPlayers = await getGroupPlayers(tournamentId);
   const tournamentMatches = await getTournamentMatches(tournamentId);
+  const finalPhaseMatches = await getFinalPhaseMatches(tournamentId);
 
   return (
     <>
@@ -19,6 +21,7 @@ export default async function TournamentViewBottom({ tournamentId }) {
         tournamentData={tournamentData}
         groupPlayers={groupPlayers}
         tournamentMatches={tournamentMatches}
+        finalPhaseMatches={finalPhaseMatches}
       />
     </>
   );

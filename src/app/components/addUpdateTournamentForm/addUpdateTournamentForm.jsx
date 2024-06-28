@@ -30,7 +30,7 @@ export default function AddUpdateTournamentForm({ action, tournamentData }) {
     let response = undefined;
     if (action === "add") {
       response = await createTournament(filteredFormData);
-      console.log(response?.id);
+      // console.log(response?.id);
       if (response?.success) {
         toast.success("Torneo creado Correctamente");
       } else {

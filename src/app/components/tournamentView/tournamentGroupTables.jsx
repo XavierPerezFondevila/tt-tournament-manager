@@ -14,6 +14,7 @@ import TournamentGroupMatchesTable from "./tournamentGroupMatchesTable";
 import ViewGroupStateModal from "../modals/viewGroupStateModal";
 import { useState } from "react";
 import { generateFinalPhase } from "@/actions/tournament";
+import { createFinalPhaseMatch } from "@/actions/data";
 
 export default function TournamentGroupTables({
   groupPlayers,
@@ -21,14 +22,17 @@ export default function TournamentGroupTables({
   tournamentId,
   tournamentWinnersNum,
 }) {
+  const [thisTournamentPlayers, setThisTournamentPlayers] =
+    useState(groupPlayers);
+
   let areGroupsCreated = false;
   const [currentMatches, setCurrentMatches] = useState(matches);
-  if (groupPlayers.length && groupPlayers[0].grupo !== null) {
+  if (thisTournamentPlayers.length && thisTournamentPlayers[0].grupo !== null) {
     areGroupsCreated = true;
   }
 
   const playersByGroup = areGroupsCreated
-    ? getSortedByGroupsPlayers(groupPlayers)
+    ? getSortedByGroupsPlayers(thisTournamentPlayers)
     : [];
 
   const [selectedGroupKey, setSelectedGroupKey] = useState("");
@@ -40,7 +44,7 @@ export default function TournamentGroupTables({
   };
 
   const assignGroupStandings = () => {
-    const players = groupStandings.length ? groupStandings : groupPlayers;
+    const players = thisTournamentPlayers;
 
     const orderedStandings = getGroupStandings(
       matches,
@@ -51,24 +55,39 @@ export default function TournamentGroupTables({
     setGroupStandings(orderedStandings);
   };
 
+  const setFinalPhase = async () => {
+    const matches = await generateFinalPhase(thisTournamentPlayers);
+    let matchOrder = 0;
+
+    for (const match of matches) {
+      matchOrder++;
+      const newMatch = {
+        tournament: tournamentId,
+        jugador1: match[0].id,
+        jugador2: match[1].id,
+        orden_partido: matchOrder,
+        num_ronda: 8,
+      };
+
+      const result = await createFinalPhaseMatch(newMatch);
+    }
+
+    // const uri = new URL(window.location.href);
+
+    // uri.searchParams.set("q", "finalPhase");
+
+    // window.location.href = uri;
+  };
+
   useEffect(() => {
     // Here you can perform any actions that depend on groupStandings
-    console.log("Updated groupStandings:", groupStandings);
+    // console.log("Updated groupStandings:", groupStandings);
   }, [groupStandings]); // This useEffect runs whenever groupStandings changes
 
   return (
     <div>
       <div className="btn-wrapper">
-        <Button
-          variant="primary mt-2 mb-4"
-          onClick={() => {
-            generateFinalPhase(
-              currentMatches,
-              playersByGroup,
-              tournamentWinnersNum
-            );
-          }}
-        >
+        <Button variant="primary mt-2 mb-4" onClick={setFinalPhase}>
           Generar Fase final
         </Button>
       </div>
@@ -104,13 +123,13 @@ export default function TournamentGroupTables({
 
                     <div className="groups-table-wrapper">
                       <TournamentGroupTable
-                        groupPlayers={groupPlayers}
+                        groupPlayers={thisTournamentPlayers}
                         groupKey={groupKey}
                       />
                       <TournamentGroupMatchesTable
                         matches={currentMatches}
                         groupKey={groupKey}
-                        tournamentPlayers={groupPlayers}
+                        tournamentPlayers={thisTournamentPlayers}
                       />
                     </div>
                   </Accordion.Body>
@@ -123,8 +142,14 @@ export default function TournamentGroupTables({
               tournamentid={tournamentId}
               onHide={(showState, updatedPlayers) => {
                 if (showState && updatedPlayers) {
-                  setGroupStandings(updatedPlayers);
-                  console.log(groupStandings);
+                  setThisTournamentPlayers((prevPlayers) =>
+                    prevPlayers.map((player) => {
+                      const newPlayer = updatedPlayers.find(
+                        (p) => p.id === player.id
+                      );
+                      return newPlayer ? { ...player, ...newPlayer } : player;
+                    })
+                  );
                 }
                 setModalShow(showState);
               }}

@@ -6,12 +6,14 @@ import Tabs from "react-bootstrap/Tabs";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import TournamentGroupTables from "./tournamentGroupTables";
+import TournamentFinalPhaseGrid from "./tournamentFinalPhaseGrid";
 
 export default function TournamentViewBottomTabs({
   tournamentPlayers,
   tournamentData,
   tournamentMatches,
   groupPlayers,
+  finalPhaseMatches,
 }) {
   const searchParams = useSearchParams();
   let defaultKey = searchParams.get("q") || "table";
@@ -41,7 +43,10 @@ export default function TournamentViewBottomTabs({
           />
         </Tab>
         <Tab eventKey="finalPhase" title="Fase final">
-          Aqui van los partidos de la fase final
+          <TournamentFinalPhaseGrid
+            matches={finalPhaseMatches}
+            tournamentId={tournamentData.id}
+          />
         </Tab>
       </Tabs>
     </>

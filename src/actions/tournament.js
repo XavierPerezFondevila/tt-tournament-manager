@@ -310,23 +310,57 @@ export const generateTournamentGroups = async (players, numGroups, tournamentSiz
 
 };
 
-export const generateFinalPhase = (matches, playersByGroup, tournamentWinnersNum) => {
-    const standings = {};
-    let matchesNum = 0;
+const getPlayersByGroup = (jugadores) => {
+    const grupos = {};
 
-    Object.keys(playersByGroup).forEach((groupKey) => {
-        const players = playersByGroup[groupKey].flat();
-        const groupStandings = getGroupStandings(matches, groupKey, players);
-        const qualifiedPlayers = groupStandings.slice(0, tournamentWinnersNum);
-        standings[groupKey] = qualifiedPlayers;
-        matchesNum += standings[groupKey].length;
+    jugadores.forEach(jugador => {
+        if (!grupos[jugador.grupo]) {
+            grupos[jugador.grupo] = [];
+        }
+        grupos[jugador.grupo].push(jugador);
     });
 
-    const roundName = FINAL_ROUND_NAMES[matchesNum];
+    return Object.values(grupos);
+}
 
-    console.log(generarDieciseisavos(standings));
+
+export const generateFinalPhase = (players) => {
+    const qualifiedPlayers = players.filter(player => player.clasificado);
+    let groups = getPlayersByGroup(qualifiedPlayers);
+    const matches = [];
+
+    let counter = 0;
+    let currentPlayer = undefined;
 
 
+    for (let index = 0; index < 8; index++) {
+        if (counter < groups.length) {
+            currentPlayer = groups[counter].shift();
+        } else {
+            let newIndex = groups.findIndex(group => group.length > 1);
+            currentPlayer = groups[newIndex].shift();
+        }
+
+        matches.push([currentPlayer]);
+        counter++;
+    }
+
+    for (let index = 0; index < 8; index++) {
+        const matchPlayer = matches[index][0];
+
+        let newIndex = groups.findIndex(group => group.length > 1 && group.slice()[0].grupo !== matchPlayer.grupo);
+        if (newIndex === -1) {
+            newIndex = groups.findIndex(group => group.length && group.slice()[0].grupo !== matchPlayer.grupo)
+        }
+
+        if (newIndex === -1) {
+            newIndex = groups.findIndex(group => group.length)
+        }
+
+        matches[index].push(groups[newIndex].pop());
+    }
+
+    return matches;
 };
 
 export const getMatchWinner = async (match, result) => {

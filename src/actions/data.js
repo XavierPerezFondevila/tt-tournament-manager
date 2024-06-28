@@ -205,11 +205,100 @@ export async function getTournamentMatches(tournamentId) {
     return [];
 }
 
+export async function getFinalPhaseMatches(tournamentId) {
+    if (!isNaN(tournamentId) && parseInt(tournamentId) > 0) {
+        const sqlData = await sql`SELECT 
+            P.id AS id_partido,
+            J1.id AS id_jugador1,
+            J1.nombre AS nombre_jugador1,
+            J2.id AS id_jugador2,
+            J2.nombre AS nombre_jugador2,
+            P.ganador,
+            P.resultado_global,
+            P.orden_partido,
+            P.num_ronda
+        FROM 
+            partidos_fase_final P
+        JOIN 
+            Jugador J1 ON P.id_jugador1 = J1.id
+        JOIN 
+            Jugador J2 ON P.id_jugador2 = J2.id
+        WHERE 
+            P.id_torneo = ${tournamentId}
+        ORDER BY 
+            orden_partido, num_ronda ASC;
+        `;
+        return sqlData.rows;
+    }
+
+    return [];
+}
+
+export async function addOrUpdateNewFinalFaseMatch(tournamentId, idWinner, nextRound, oldMatchNumber) {
+    const sqlData = await sql`SELECT P.id
+    FROM partidos_fase_final P
+    WHERE P.id_torneo = ${tournamentId} and P.num_ronda = ${nextRound}`;
+
+    let result = undefined;
+    if (sqlData.rowCount === 0) { //create
+        if (oldMatchNumber % 2 == 0) {
+            const ordenPartido = (oldMatchNumber / 2);
+            result = await sql`
+            INSERT INTO partidos_fase_final (id_torneo, id_jugador2, orden_partido, num_ronda) 
+            VALUES (${tournamentId}, ${idWinner}, ${ordenPartido}, ${nextRound})
+            `;
+        }
+        else {
+            const ordenPartido = ((oldMatchNumber + 1) / 2);
+            result = await sql`
+            INSERT INTO partidos_fase_final (id_torneo, id_jugador1, orden_partido, num_ronda) 
+            VALUES (${tournamentId}, ${idWinner}, ${ordenPartido}, ${nextRound})
+            `;
+        }
+    } else {
+        if (oldMatchNumber % 2 == 0) {
+            const ordenPartido = (oldMatchNumber / 2);
+            result = await sql`UPDATE partidos_fase_final SET 
+            id_jugador2 = ${`${idWinner}`}
+            WHERE id_torneo = ${`${tournamentId}`} and num_ronda = ${nextRound} and orden_partido = ${ordenPartido};`;
+        } else {
+            const ordenPartido = ((oldMatchNumber + 1) / 2);
+            result = await sql`UPDATE partidos_fase_final SET 
+            id_jugador1 = ${`${idWinner}`}
+            WHERE id_torneo = ${`${tournamentId}`} and num_ronda = ${nextRound} and orden_partido = ${ordenPartido};`;
+        }
+    }
+
+    return parseReponse(result);
+}
+
+export async function createFinalPhaseMatch(match) {
+    console.log(match.orden_partido)
+    const sqlData = await sql`
+        INSERT INTO partidos_fase_final (id_torneo, id_jugador1, id_jugador2, orden_partido, num_ronda) 
+        VALUES (${match.tournament}, ${match.jugador1}, ${match.jugador2}, ${match.orden_partido}, ${match.num_ronda})
+      `;
+
+    return parseReponse(sqlData);
+
+
+}
+
 export async function updateMatchResult(matchPoints, globalResult, idWinner, matchId) {
 
 
     const sqlData = await sql`UPDATE partidos SET 
     resultado = ${matchPoints},
+    resultado_global = ${`${globalResult}`},
+    ganador = ${`${idWinner}`}
+    WHERE id = ${`${matchId}`};`;
+
+    return parseReponse(sqlData);
+}
+
+export async function updateFinalFaseMatchResult(matchId, idWinner, globalResult) {
+
+    const sqlData = await sql`UPDATE partidos_fase_final SET 
     resultado_global = ${`${globalResult}`},
     ganador = ${`${idWinner}`}
     WHERE id = ${`${matchId}`};`;

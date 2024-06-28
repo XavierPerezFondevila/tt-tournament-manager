@@ -41,6 +41,7 @@
     }
 }
 
+#result-modal,
 .standing-modal .modal-dialog {
     --bs-modal-width: 800px;
 }
