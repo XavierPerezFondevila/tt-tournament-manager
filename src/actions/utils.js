@@ -11,8 +11,8 @@ export const getGroupStandings = (matches, selectedGroupKey, groupPlayers) => {
     // Retrieve matches for the selected group
     const groupMatches = getMatchesByGroup(matches, selectedGroupKey);
     const standings = {};
-    console.log(selectedGroupKey)
-    console.log(groupPlayers)
+    // console.log(selectedGroupKey)
+    // console.log(groupPlayers)
     // Iterate through each match in the group
     groupMatches.forEach((match) => {
         const players = [match.id_jugador1, match.id_jugador2];

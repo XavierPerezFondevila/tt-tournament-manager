@@ -219,14 +219,14 @@ export async function getFinalPhaseMatches(tournamentId) {
             P.num_ronda
         FROM 
             partidos_fase_final P
-        JOIN 
+        LEFT JOIN 
             Jugador J1 ON P.id_jugador1 = J1.id
-        JOIN 
+        LEFT JOIN 
             Jugador J2 ON P.id_jugador2 = J2.id
         WHERE 
             P.id_torneo = ${tournamentId}
         ORDER BY 
-            orden_partido, num_ronda ASC;
+            P.orden_partido, P.num_ronda ASC;
         `;
         return sqlData.rows;
     }
@@ -235,45 +235,180 @@ export async function getFinalPhaseMatches(tournamentId) {
 }
 
 export async function addOrUpdateNewFinalFaseMatch(tournamentId, idWinner, nextRound, oldMatchNumber) {
+    const ordenPartido = Math.round(oldMatchNumber % 2 == 0 ? (oldMatchNumber / 2) : ((oldMatchNumber + 1) / 2));
+
+    if (nextRound < 1) {
+        return null;
+    }
+
+
     const sqlData = await sql`SELECT P.id
     FROM partidos_fase_final P
-    WHERE P.id_torneo = ${tournamentId} and P.num_ronda = ${nextRound}`;
+    WHERE P.id_torneo = ${tournamentId} and P.num_ronda = ${nextRound} and P.orden_partido = ${ordenPartido}`;
 
     let result = undefined;
     if (sqlData.rowCount === 0) { //create
         if (oldMatchNumber % 2 == 0) {
-            const ordenPartido = (oldMatchNumber / 2);
             result = await sql`
-            INSERT INTO partidos_fase_final (id_torneo, id_jugador2, orden_partido, num_ronda) 
-            VALUES (${tournamentId}, ${idWinner}, ${ordenPartido}, ${nextRound})
-            `;
+                WITH inserted_partido AS (
+                    INSERT INTO partidos_fase_final (id_torneo, id_jugador2, orden_partido, num_ronda) 
+                    VALUES (${tournamentId}, ${idWinner}, ${ordenPartido}, ${nextRound})
+                    RETURNING 
+                        id AS id_partido, 
+                        id_torneo, 
+                        id_jugador1, 
+                        id_jugador2, 
+                        ganador, 
+                        resultado_global, 
+                        orden_partido, 
+                        num_ronda
+                )
+                SELECT 
+                    ip.id_partido,
+                    ip.id_torneo,
+                    ip.id_jugador1,
+                    j1.nombre AS nombre_jugador1,
+                    ip.id_jugador2,
+                    j2.nombre AS nombre_jugador2,
+                    ip.ganador,
+                    ip.resultado_global,
+                    ip.orden_partido,
+                    ip.num_ronda
+                FROM 
+                    inserted_partido ip
+                LEFT JOIN 
+                    jugador j1 ON ip.id_jugador1 = j1.id
+                LEFT JOIN 
+                    jugador j2 ON ip.id_jugador2 = j2.id;
+
+        `;
         }
         else {
-            const ordenPartido = ((oldMatchNumber + 1) / 2);
             result = await sql`
-            INSERT INTO partidos_fase_final (id_torneo, id_jugador1, orden_partido, num_ronda) 
-            VALUES (${tournamentId}, ${idWinner}, ${ordenPartido}, ${nextRound})
-            `;
+                WITH inserted_partido AS (
+                    INSERT INTO partidos_fase_final (id_torneo, id_jugador1, orden_partido, num_ronda) 
+                    VALUES (${tournamentId}, ${idWinner}, ${ordenPartido}, ${nextRound})
+                    RETURNING 
+                        id AS id_partido, 
+                        id_torneo, 
+                        id_jugador1, 
+                        id_jugador2, 
+                        ganador, 
+                        resultado_global, 
+                        orden_partido, 
+                        num_ronda
+                )
+                SELECT 
+                    ip.id_partido,
+                    ip.id_torneo,
+                    ip.id_jugador1,
+                    j1.nombre AS nombre_jugador1,
+                    ip.id_jugador2,
+                    j2.nombre AS nombre_jugador2,
+                    ip.ganador,
+                    ip.resultado_global,
+                    ip.orden_partido,
+                    ip.num_ronda
+                FROM 
+                    inserted_partido ip
+                LEFT JOIN 
+                    jugador j1 ON ip.id_jugador1 = j1.id
+                LEFT JOIN 
+                    jugador j2 ON ip.id_jugador2 = j2.id;
+
+        `;
         }
     } else {
+        // console.log(oldMatchNumber)
         if (oldMatchNumber % 2 == 0) {
-            const ordenPartido = (oldMatchNumber / 2);
-            result = await sql`UPDATE partidos_fase_final SET 
-            id_jugador2 = ${`${idWinner}`}
-            WHERE id_torneo = ${`${tournamentId}`} and num_ronda = ${nextRound} and orden_partido = ${ordenPartido};`;
+            result = await sql`
+                WITH updated_partido AS (
+                    UPDATE partidos_fase_final SET 
+                        id_jugador2 = ${idWinner},
+                        ganador = null,
+                        resultado_global = null
+                    WHERE id_torneo = ${tournamentId} 
+                    AND num_ronda = ${nextRound} 
+                    AND orden_partido = ${ordenPartido}
+                    RETURNING 
+                        id AS id_partido, 
+                        id_torneo, 
+                        id_jugador1, 
+                        id_jugador2, 
+                        ganador, 
+                        resultado_global, 
+                        orden_partido, 
+                        num_ronda
+                )
+                SELECT 
+                    up.id_partido,
+                    up.id_torneo,
+                    up.id_jugador1,
+                    j1.nombre AS nombre_jugador1,
+                    up.id_jugador2,
+                    j2.nombre AS nombre_jugador2,
+                    up.ganador,
+                    up.resultado_global,
+                    up.orden_partido,
+                    up.num_ronda
+                FROM 
+                    updated_partido up
+                LEFT JOIN 
+                    jugador j1 ON up.id_jugador1 = j1.id
+                LEFT JOIN 
+                    jugador j2 ON up.id_jugador2 = j2.id;
+        `;
         } else {
-            const ordenPartido = ((oldMatchNumber + 1) / 2);
-            result = await sql`UPDATE partidos_fase_final SET 
-            id_jugador1 = ${`${idWinner}`}
-            WHERE id_torneo = ${`${tournamentId}`} and num_ronda = ${nextRound} and orden_partido = ${ordenPartido};`;
+            result = await sql`
+                WITH updated_partido AS (
+                    UPDATE partidos_fase_final SET 
+                        id_jugador1 = ${idWinner},
+                        ganador = null,
+                        resultado_global = null
+                    WHERE id_torneo = ${tournamentId} 
+                    AND num_ronda = ${nextRound} 
+                    AND orden_partido = ${ordenPartido}
+                    RETURNING 
+                        id AS id_partido, 
+                        id_torneo, 
+                        id_jugador1, 
+                        id_jugador2, 
+                        ganador, 
+                        resultado_global, 
+                        orden_partido, 
+                        num_ronda
+                )
+                SELECT 
+                    up.id_partido,
+                    up.id_torneo,
+                    up.id_jugador1,
+                    j1.nombre AS nombre_jugador1,
+                    up.id_jugador2,
+                    j2.nombre AS nombre_jugador2,
+                    up.ganador,
+                    up.resultado_global,
+                    up.orden_partido,
+                    up.num_ronda
+                FROM 
+                    updated_partido up
+                LEFT JOIN 
+                    jugador j1 ON up.id_jugador1 = j1.id
+                LEFT JOIN 
+                    jugador j2 ON up.id_jugador2 = j2.id;
+        `;
         }
     }
 
-    return parseReponse(result);
+    const response = parseReponse(result);
+    // console.log(result);
+    if (response.success) {
+        return result.rows.shift();
+    }
+
 }
 
 export async function createFinalPhaseMatch(match) {
-    console.log(match.orden_partido)
+    // console.log(match.orden_partido)
     const sqlData = await sql`
         INSERT INTO partidos_fase_final (id_torneo, id_jugador1, id_jugador2, orden_partido, num_ronda) 
         VALUES (${match.tournament}, ${match.jugador1}, ${match.jugador2}, ${match.orden_partido}, ${match.num_ronda})

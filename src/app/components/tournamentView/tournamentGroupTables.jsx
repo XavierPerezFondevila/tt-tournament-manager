@@ -21,6 +21,7 @@ export default function TournamentGroupTables({
   matches,
   tournamentId,
   tournamentWinnersNum,
+  finalPhaseMatches,
 }) {
   const [thisTournamentPlayers, setThisTournamentPlayers] =
     useState(groupPlayers);
@@ -72,24 +73,21 @@ export default function TournamentGroupTables({
       const result = await createFinalPhaseMatch(newMatch);
     }
 
-    // const uri = new URL(window.location.href);
+    const uri = new URL(window.location.href);
 
-    // uri.searchParams.set("q", "finalPhase");
+    uri.searchParams.set("q", "finalPhase");
 
-    // window.location.href = uri;
+    window.location.href = uri;
   };
-
-  useEffect(() => {
-    // Here you can perform any actions that depend on groupStandings
-    // console.log("Updated groupStandings:", groupStandings);
-  }, [groupStandings]); // This useEffect runs whenever groupStandings changes
 
   return (
     <div>
       <div className="btn-wrapper">
-        <Button variant="primary mt-2 mb-4" onClick={setFinalPhase}>
-          Generar Fase final
-        </Button>
+        {!finalPhaseMatches.length && (
+          <Button variant="primary mt-2 mb-4" onClick={setFinalPhase}>
+            Generar Fase final
+          </Button>
+        )}
       </div>
       <div className="groups-wrapper">
         {playersByGroup.length !== 0 ? (

@@ -36,6 +36,7 @@ export default function TournamentViewBottomTabs({
         </Tab>
         <Tab eventKey="grupos" title="Grupos">
           <TournamentGroupTables
+            finalPhaseMatches={finalPhaseMatches}
             groupPlayers={groupPlayers}
             matches={tournamentMatches}
             tournamentId={tournamentData.id}

@@ -12,17 +12,14 @@ export default function AddFinalFaseResultModal(props) {
     ev.preventDefault();
     const formData = new FormData(ev.target);
 
-    const results = [
-      `${formData.get("resultado1_1") || 0}-${
-        formData.get("resultado2_1") || 0
-      }`,
-    ];
-
+    const results = `${formData.get("resultado1_1") || 0}-${
+      formData.get("resultado2_1") || 0
+    }`;
     let idWinner = props.selectedmatch.id_jugador1;
-    const globalResult = results.join("-");
-
-    if (results[1] > results[0]) {
-      idWinner = selectedmatch.id_jugador2;
+    const globalResult = results;
+    // console.log(results);
+    if (parseInt(results.split("-")[1]) > parseInt(results[0].split("-"))) {
+      idWinner = props.selectedmatch.id_jugador2;
     }
     props.selectedmatch.resultado_global = globalResult;
     props.selectedmatch.ganador = idWinner;
@@ -44,7 +41,9 @@ export default function AddFinalFaseResultModal(props) {
         oldMatchNumber
       );
 
-      if (result.success) {
+      if (result) {
+        props.onHide(result);
+      } else if (result === null) {
         props.onHide();
       }
     }
